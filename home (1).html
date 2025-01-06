@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Dashboard</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #004080;
+      padding: 15px 20px;
+      color: white;
+    }
+
+    .navbar .brand {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .navbar .links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar .links a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .navbar .links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hamburger div {
+      background-color: white;
+      height: 3px;
+      width: 25px;
+    }
+
+    /* Sidebar Menu */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #00264d;
+      color: white;
+      padding: 20px;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar .menu-item {
+      margin-bottom: 10px;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      display: block;
+    }
+
+    .sidebar a:hover {
+      color: #00bfff;
+    }
+
+    /* Main Section */
+    .main {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .main h1 {
+      font-size: 28px;
+      color: #004080;
+      margin-bottom: 20px;
+    }
+
+    /* Cards Section */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .card h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #004080;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .card a:hover {
+      background-color: #00264d;
+    }
+
+    /* Temporary Link Section */
+    .link-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #eef;
+      border: 1px solid #ccd;
+      border-radius: 8px;
+    }
+
+    .link-section button {
+      padding: 10px 20px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .link-section button:hover {
+      background-color: #00264d;
+    }
+
+    .link-display {
+      margin-top: 10px;
+      font-size: 16px;
+      background-color: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      word-wrap: break-word;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px 0;
+      background: #f1f1f1;
+      color: #333;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .navbar .links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="brand">My Dashboard</div>
+    <div class="hamburger" onclick="toggleSidebar()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <a href="#">Dashboard</a>
+    <div class="menu-item">
+      <a href="#">Player</a>
+    </div>
+    <a href="#">Agent</a>
+    <a href="#">Sub-Agent</a>
+    <a href="#">Comm Log</a>
+    <a href="#">Commission Withdrawal</a>
+    <a href="admin.html">Approval Player</a>
+    <a href="login.html" onclick="logout()">Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Welcome, <span id="username">User</span>!</h1>
+    <div class="cards">
+      <div class="card">
+        <h2>Balance</h2>
+        <p>$1,234.56</p>
+        <a href="#">View Details</a>
+      </div>
+      <div class="card">
+        <h2>Commission</h2>
+        <p>$567.89</p>
+        <a href="#">View Details</a>
+      </div>
+      <div class="card">
+        <h2>Profile</h2>
+        <p>Update your account settings.</p>
+        <a href="#">Edit Profile</a>
+      </div>
+    </div>
+
+    <!-- Temporary Link Section -->
+    <div class="link-section">
+      <h2>Player Registration Link</h2>
+      <p>Generate a temporary link for players who want to register.</p>
+      <button onclick="generateLink()">Generate Link</button>
+      <button id="copyButton" onclick="copyLink()" disabled>Copy Link</button>
+      <div class="link-display" id="linkDisplay">No link generated yet.</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 My Dashboard. All rights reserved.
+  </footer>
+
+  <script>
+    // Toggle Sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    // Logout Function
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    }
+
+    // Display User Details in Sidebar and Welcome Message
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (currentUser && currentUser.username) {
+      document.getElementById('username').textContent = currentUser.username;
+      document.getElementById('userDetails').innerHTML = `
+        <p><strong>Username:</strong> ${currentUser.username}</p>
+        <p><strong>Email:</strong> ${currentUser.email}</p>
+        <p><strong>Balance:</strong> $${currentUser.balance || '0.00'}</p>
+      `;
+    } else {
+      alert('You are not logged in!');
+      window.location.href = 'login.html';
+    }
+
+    // Function to generate a temporary registration link
+    function generateLink() {
+      const token = Date.now();  // Generate a unique token using current timestamp
+      const tempLink = `${window.location.origin}/register.html?token=${token}`;
+      
+      // Display the generated link
+      const linkDisplay = document.getElementById('linkDisplay');
+      linkDisplay.textContent = tempLink;
+
+      // Enable the copy button
+      const copyButton = document.getElementById('copyButton');
+      copyButton.disabled = false;
+    }
+
+    // Function to copy the generated link to the clipboard
+    function copyLink() {
+      const linkText = document.getElementById('linkDisplay').textContent;
+      
+      // Create a temporary textarea to hold the text and copy it
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = linkText;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+
+      alert('Link copied to clipboard!');
+    }
+  </script>
+</body>
+</html>

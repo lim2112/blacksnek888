@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Approval</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #004080;
+      color: white;
+    }
+    .approve-btn, .reject-btn {
+      padding: 8px 16px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .approve-btn {
+      background-color: green;
+    }
+    .reject-btn {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Admin - User Approvals</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="user-list">
+        <!-- User data will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+
+    const userList = document.getElementById('user-list');
+
+    // Loop through pending users and display them in the table
+    pendingUsers.forEach((user, index) => {
+      const row = document.createElement('tr');
+      row.id = `pending-row-${index}`; // Unique ID for each row
+      row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+        <td>
+          <button class="approve-btn" onclick="approveUser(${index})">Approve</button>
+          <button class="reject-btn" onclick="rejectUser(${index})">Reject</button>
+        </td>
+      `;
+      userList.appendChild(row);
+    });
+
+    function approveUser(index) {
+      const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+      const approvedPlayers = JSON.parse(localStorage.getItem('approvedPlayers')) || [];
+      
+      if (pendingUsers[index]) {
+        const user = pendingUsers[index];
+        
+        // Assign an ID to the user (could be a simple auto-increment or random ID)
+        user.id = Date.now();  // Assign a timestamp as a simple ID
+
+        // Check if the user is already approved (to avoid duplicates)
+        if (!approvedPlayers.some(u => u.username === user.username)) {
+          approvedPlayers.push(user);
+          localStorage.setItem('approvedPlayers', JSON.stringify(approvedPlayers));
+          
+          // Remove the approved user from pendingUsers
+          pendingUsers.splice(index, 1);
+          localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+          
+          // Remove the row from the table after approval
+          const pendingRow = document.getElementById(`pending-row-${index}`);
+          if (pendingRow) {
+            pendingRow.remove();
+          }
+
+          // Add the approved player to the sidebar dynamically
+          addApprovedPlayer(user);
+          
+          alert(`User ${user.username} approved!`);
+        } else {
+          alert(`${user.username} is already approved!`);
+        }
+      }
+    }
+
+    function rejectUser(index) {
+      const pendingUsers = JSON.parse(localStorage.getItem('pendingUsers')) || [];
+      if (pendingUsers[index]) {
+        const user = pendingUsers[index];
+        alert(`User ${user.username} rejected!`);
+
+        // Remove the rejected user from pendingUsers
+        pendingUsers.splice(index, 1);
+        localStorage.setItem('pendingUsers', JSON.stringify(pendingUsers));
+
+        // Remove the row from the table after rejection
+        const pendingRow = document.getElementById(`pending-row-${index}`);
+        if (pendingRow) {
+          pendingRow.remove();
+        }
+      }
+    }
+
+    // Function to add approved players to the sidebar (for future reference)
+    function addApprovedPlayer(player) {
+      // Simulating a sidebar element
+      const sidebar = document.getElementById('sidebar') || document.createElement('div');
+      sidebar.id = 'sidebar'; // Ensure an ID for the sidebar
+      document.body.appendChild(sidebar); // Attach to body if not already present
+
+      const playerListItem = document.createElement('a');
+      playerListItem.href = `player.html?id=${player.id}`;
+      playerListItem.textContent = player.username;
+      sidebar.appendChild(playerListItem);
+    }
+  </script>
+</body>
+</html>
